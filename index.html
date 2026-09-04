@@ -41,6 +41,18 @@
               <span aria-hidden="true">&#8594;</span>
             </button>
           </li>
+          <li>
+            <button
+              class="daily-update-trigger"
+              type="button"
+              aria-haspopup="dialog"
+              aria-controls="september-4-dialog"
+              data-dialog-trigger
+            >
+              <span>4th of September</span>
+              <span aria-hidden="true">&#8594;</span>
+            </button>
+          </li>
         </ul>
       </nav>
     </aside>
@@ -176,6 +188,33 @@
           Actions for tasks where exact reproducibility doesn&rsquo;t matter, such as triaging
           issues, drafting documentation, researching dependencies, or proposing code
           improvements for human review.
+        </p>
+      </article>
+    </dialog>
+
+    <dialog
+      class="daily-update-dialog"
+      id="september-4-dialog"
+      aria-labelledby="september-4-question"
+      aria-describedby="september-4-answer"
+    >
+      <article class="daily-update-dialog-content">
+        <header class="daily-update-dialog-header">
+          <p>Daily Update / 4th of September</p>
+          <form method="dialog">
+            <button class="dialog-close" type="submit" aria-label="Close dialog" title="Close dialog">
+              <span aria-hidden="true">&#10005;</span>
+            </button>
+          </form>
+        </header>
+        <h2 id="september-4-question">Can agentic workflows write code and create pull requests?</h2>
+        <p id="september-4-answer">
+          Yes. The recommended <strong>create-pull-request</strong> safe output proposes
+          code changes, documentation updates, or other modifications for human review
+          through a separate, permission-scoped job. Direct write permissions and custom
+          jobs are possible but are separate trust boundaries. If an organization blocks
+          PR creation from GitHub Actions, workflows can still generate diffs or
+          suggestions in issues or comments for manual application.
         </p>
       </article>
     </dialog>
