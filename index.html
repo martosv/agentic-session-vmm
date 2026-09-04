@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A concise introduction to GitHub Agentic Workflows: AI-powered automation that runs in GitHub Actions."
+    />
+    <title>GitHub Agentic Workflows</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="GitHub Agentic Workflows home">
+        <span class="brand-mark" aria-hidden="true">//</span>
+        <span>GitHub Agentic Workflows</span>
+      </a>
+      <a class="text-link" href="#why">How it works</a>
+    </header>
+
+    <aside class="daily-updates" aria-labelledby="daily-updates-title">
+      <nav class="daily-updates-nav">
+        <h2 id="daily-updates-title">Daily Updates</h2>
+        <ul class="daily-updates-list">
+          <li>
+            <button
+              class="daily-update-trigger"
+              type="button"
+              aria-haspopup="dialog"
+              aria-controls="august-1-dialog"
+              data-dialog-trigger
+            >
+              <span>1st of August</span>
+              <span aria-hidden="true">&#8594;</span>
+            </button>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main id="top">
+      <section class="hero section-shell" aria-labelledby="page-title">
+        <p class="eyebrow">GitHub Actions, with reasoning</p>
+        <h1 id="page-title">GitHub Agentic<br />Workflows</h1>
+        <p class="hero-copy">
+          Describe a task in natural language. An AI agent works through it in a
+          controlled GitHub Actions environment.
+        </p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#why">Explore the workflow</a>
+          <a
+            class="button button-secondary"
+            href="https://github.github.com/gh-aw/introduction/overview/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Read official docs <span aria-hidden="true">&#8599;</span>
+          </a>
+        </div>
+        <div class="hero-rule" aria-hidden="true"></div>
+        <p class="hero-footnote">Natural language in. Useful automation out.</p>
+      </section>
+
+      <section id="why" class="principles section-shell" aria-labelledby="principles-title">
+        <div class="section-heading">
+          <p class="eyebrow">A different kind of automation</p>
+          <h2 id="principles-title">Give the agent a goal, not a script.</h2>
+          <p>
+            Agentic Workflows run AI agents in CI/CD. Rather than hard-coding every
+            decision, you define an outcome and let an agent reason through the work.
+          </p>
+        </div>
+
+        <ol class="principle-list">
+          <li>
+            <span class="principle-number">01</span>
+            <div>
+              <h3>Automation</h3>
+              <p>Turn repository events into work an agent can investigate, draft, and complete.</p>
+            </div>
+          </li>
+          <li>
+            <span class="principle-number">02</span>
+            <div>
+              <h3>Safety</h3>
+              <p>Keep agent execution isolated, permission-aware, and observable inside GitHub Actions.</p>
+            </div>
+          </li>
+          <li>
+            <span class="principle-number">03</span>
+            <div>
+              <h3>Reasoning</h3>
+              <p>Use AI models to adapt when a task calls for judgment instead of a fixed sequence.</p>
+            </div>
+          </li>
+        </ol>
+
+        <figure class="workflow-image image-frame">
+          <img
+            src="images/intro-agenticworkflows.png"
+            alt="Diagram showing the three Agentic Workflows principles: automation, safety, and reasoning."
+          />
+          <figcaption>Automation, safety, and reasoning work together in the same workflow.</figcaption>
+        </figure>
+      </section>
+
+      <section class="comparison" aria-labelledby="comparison-title">
+        <div class="section-shell">
+          <div class="section-heading comparison-heading">
+            <p class="eyebrow">Built to complement</p>
+            <h2 id="comparison-title">Not a replacement for GitHub Actions.</h2>
+            <p>
+              Traditional Actions are ideal for fast, deterministic jobs. Agentic
+              Workflows add a practical option for tasks that need exploration,
+              interpretation, or iterative problem solving.
+            </p>
+          </div>
+          <figure class="image-frame comparison-image">
+            <img
+              src="images/actions-agenticworkflows-together.png"
+              alt="Comparison between traditional GitHub Actions and Agentic Workflows, showing how they complement each other."
+            />
+          </figure>
+        </div>
+      </section>
+
+      <section class="start section-shell" aria-labelledby="start-title">
+        <p class="eyebrow">Your next workflow</p>
+        <h2 id="start-title">Start with the outcome.</h2>
+        <p>
+          Learn the concepts, then use the official guide to build an Agentic Workflow
+          for your repository.
+        </p>
+        <a
+          class="button button-primary"
+          href="https://github.github.com/gh-aw/introduction/overview/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Open the overview <span aria-hidden="true">&#8599;</span>
+        </a>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Based on the <a href="https://github.github.com/gh-aw/introduction/overview/">GitHub Agentic Workflows documentation</a>.</p>
+    </footer>
+
+    <dialog
+      class="daily-update-dialog"
+      id="august-1-dialog"
+      aria-labelledby="august-1-question"
+      aria-describedby="august-1-answer"
+    >
+      <article class="daily-update-dialog-content">
+        <header class="daily-update-dialog-header">
+          <p>Daily Update / 1st of August</p>
+          <form method="dialog">
+            <button class="dialog-close" type="submit" aria-label="Close dialog" title="Close dialog">
+              <span aria-hidden="true">&#10005;</span>
+            </button>
+          </form>
+        </header>
+        <h2 id="august-1-question">I like deterministic CI/CD. Isn&rsquo;t this non-deterministic?</h2>
+        <p id="august-1-answer">
+          Agentic workflows are <strong>100% additive</strong> &mdash; your deterministic
+          build, test, and release pipelines stay unchanged. Think of it as
+          <strong>Continuous AI</strong> alongside CI/CD: a new automation layer in GitHub
+          Actions for tasks where exact reproducibility doesn&rsquo;t matter, such as triaging
+          issues, drafting documentation, researching dependencies, or proposing code
+          improvements for human review.
+        </p>
+      </article>
+    </dialog>
+
+    <script>
+      document.querySelectorAll("[data-dialog-trigger]").forEach((trigger) => {
+        trigger.addEventListener("click", () => {
+          const dialogId = trigger.getAttribute("aria-controls");
+          const dialog = dialogId ? document.getElementById(dialogId) : null;
+
+          if (dialog instanceof HTMLDialogElement && !dialog.open) {
+            dialog.showModal();
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

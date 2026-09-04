@@ -1,0 +1,271 @@
+name: ready-for-part2
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: write
+
+concurrency:
+  group: part2-readiness-${{ github.repository_id }}
+  cancel-in-progress: false
+
+jobs:
+  archive-completed-setup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 3
+          ref: ${{ github.event_name == 'workflow_dispatch' && 'main' || github.sha }}
+
+      - name: Archive sections and commit transition
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          if [[ "$GITHUB_EVENT_NAME" == "push" ]]; then
+            bootstrap_subject="configure Codespaces permissions"
+            bootstrap_author_email="41898282+github-actions[bot]@users.noreply.github.com"
+            mapfile -t head_parents < <(git cat-file -p HEAD | sed -n 's/^parent //p')
+
+            if (( ${#head_parents[@]} != 1 )); then
+              echo "Skipping: the pushed commit is not the first commit after the template root."
+              exit 0
+            fi
+
+            head_subject="$(git show -s --format=%s HEAD)"
+            head_author_email="$(git show -s --format=%ae HEAD)"
+
+            if [[ "$head_subject" == "$bootstrap_subject" ]] &&
+               [[ "$head_author_email" == "$bootstrap_author_email" ]]; then
+              echo "Skipping: the pushed commit is the Codespaces bootstrap commit."
+              exit 0
+            fi
+
+            root_candidate="${head_parents[0]}"
+            parent_subject="$(git show -s --format=%s "$root_candidate")"
+            parent_author_email="$(git show -s --format=%ae "$root_candidate")"
+
+            if [[ "$parent_subject" == "$bootstrap_subject" ]] &&
+               [[ "$parent_author_email" == "$bootstrap_author_email" ]]; then
+              mapfile -t bootstrap_parents < <(git cat-file -p "$root_candidate" | sed -n 's/^parent //p')
+
+              if (( ${#bootstrap_parents[@]} != 1 )); then
+                echo "Skipping: the Codespaces bootstrap commit does not follow the template root."
+                exit 0
+              fi
+
+              root_candidate="${bootstrap_parents[0]}"
+            fi
+
+            mapfile -t template_parents < <(git cat-file -p "$root_candidate" | sed -n 's/^parent //p')
+
+            if (( ${#template_parents[@]} != 0 )); then
+              echo "Skipping: the pushed commit is not the first commit after the template root."
+              exit 0
+            fi
+          fi
+
+          archive_file="completed-sections1-2-3.md"
+          section_heading="## 4. A custom agentic workflow - Weekly Activity Report"
+          agenda_heading="## AGENDA : What Are We Going to Automate Today?"
+          completion_heading="# 🎉 CONGRATULATIONS FOR MAKING IT THIS FAR!!! 🚀🥳"
+
+          extract_agenda_block() {
+            awk -v heading="$agenda_heading" '
+              $0 == heading {
+                in_agenda = 1
+                print
+                next
+              }
+
+              !in_agenda {
+                next
+              }
+
+              table_started && !/^\|/ {
+                exit
+              }
+
+              /^\|/ {
+                table_started = 1
+                print
+                next
+              }
+
+              /^[[:space:]]*$/ {
+                print
+                next
+              }
+
+              { exit }
+            ' "$1"
+          }
+
+          validate_part2_readme() {
+            local readme_file="$1"
+            local readme_label="$2"
+            local agenda_block
+
+            if [[ "$(head -n 1 "$readme_file")" != "$agenda_heading" ]]; then
+              echo "::error::$readme_label does not start with the agenda heading."
+              return 1
+            fi
+
+            agenda_block="$(extract_agenda_block "$readme_file")"
+
+            if ! grep -qE '^\| 4 \|' <<< "$agenda_block"; then
+              echo "::error::The agenda table in $readme_label does not contain section 4."
+              return 1
+            fi
+
+            if grep -qE '^\| [1-3] \|' <<< "$agenda_block"; then
+              echo "::error::The agenda table in $readme_label still contains sections 1-3."
+              return 1
+            fi
+
+            if [[ "$(grep -cFx "$completion_heading" "$readme_file" || true)" -ne 1 ]]; then
+              echo "::error::$readme_label must contain exactly one completion heading."
+              return 1
+            fi
+
+            if [[ "$(grep -cF "$section_heading" "$readme_file" || true)" -ne 1 ]]; then
+              echo "::error::$readme_label must contain exactly one section 4 heading."
+              return 1
+            fi
+          }
+
+          first_line="$(head -n 1 README.md)"
+          mapfile -t section_matches < <(grep -nF "$section_heading" README.md || true)
+
+          if (( ${#section_matches[@]} != 1 )); then
+            echo "::error::Expected exactly one section 4 heading in README.md; found ${#section_matches[@]}."
+            exit 1
+          fi
+
+          if [[ "$first_line" == "$agenda_heading" ]]; then
+            if [[ ! -f "$archive_file" ]] ||
+               [[ ! -s "$archive_file" ]] ||
+               ! grep -qF "## 3. Install and Initialize \`gh-aw\`" "$archive_file" ||
+               grep -qF "$section_heading" "$archive_file"; then
+              echo "::error::README.md has transitioned to part 2, but its archive is missing or invalid."
+              exit 1
+            fi
+
+            if ! validate_part2_readme README.md "README.md"; then
+              exit 1
+            fi
+
+            echo "The workshop is already ready for part 2."
+          else
+            section_line="${section_matches[0]%%:*}"
+            if (( section_line <= 1 )); then
+              echo "::error::README.md does not contain any sections to archive."
+              exit 1
+            fi
+
+            archive_temp="$(mktemp .completed-sections1-2-3.md.XXXXXX)"
+            readme_temp="$(mktemp .README.md.XXXXXX)"
+            trap 'rm -f "$archive_temp" "$readme_temp"' EXIT
+
+            head -n "$((section_line - 1))" README.md > "$archive_temp"
+
+            awk -v heading="$agenda_heading" '
+              $0 == heading {
+                in_agenda = 1
+              }
+
+              in_agenda && table_started && !/^\|/ {
+                exit
+              }
+
+              in_agenda && /^\|/ {
+                table_started = 1
+              }
+
+              in_agenda && $0 !~ /^\| [1-3] \|/ {
+                print
+              }
+            ' README.md > "$readme_temp"
+
+            printf '%s\n' \
+              '' \
+              '# 🎉 CONGRATULATIONS FOR MAKING IT THIS FAR!!! 🚀🥳' \
+              '' \
+              "## NOW IT'S TIME FOR THE MOST FUN PART! 🤖✨" \
+              '' \
+              'Need to revisit setup? Review the' \
+              '[completed sections 1–3](completed-sections1-2-3.md).' \
+              '' >> "$readme_temp"
+            tail -n "+$section_line" README.md >> "$readme_temp"
+
+            if [[ ! -s "$archive_temp" ]] || ! grep -qF "## 3. Install and Initialize \`gh-aw\`" "$archive_temp"; then
+              echo "::error::The generated archive is incomplete."
+              exit 1
+            fi
+
+            if grep -qF "$section_heading" "$archive_temp"; then
+              echo "::error::The generated archive unexpectedly contains section 4."
+              exit 1
+            fi
+
+            if ! validate_part2_readme "$readme_temp" "The generated part 2 README"; then
+              exit 1
+            fi
+
+            if [[ -e "$archive_file" ]]; then
+              if [[ ! -f "$archive_file" ]] || ! cmp -s "$archive_temp" "$archive_file"; then
+                echo "::error::$archive_file conflicts with the archive generated from README.md."
+                exit 1
+              fi
+
+              rm -f "$archive_temp"
+            else
+              mv "$archive_temp" "$archive_file"
+            fi
+
+            mv "$readme_temp" README.md
+            trap - EXIT
+
+            git add -- README.md completed-sections1-2-3.md
+
+            if git diff --cached --quiet -- README.md completed-sections1-2-3.md; then
+              echo "::error::The workshop transition did not produce any changes."
+              exit 1
+            fi
+
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "advance workshop to section 4"
+
+            push_succeeded=false
+
+            for attempt in 1 2 3; do
+              git pull --rebase origin main
+
+              if git push origin HEAD:main; then
+                push_succeeded=true
+                break
+              fi
+
+              echo "::warning::Push attempt $attempt failed; retrying after synchronizing with main."
+            done
+
+            if [[ "$push_succeeded" != "true" ]]; then
+              echo "::error::Could not push the workshop transition after three attempts."
+              exit 1
+            fi
+          fi
+
+          echo "Disabling ready-for-part2 after the successful transition."
+          gh api --method PUT \
+            "repos/${GITHUB_REPOSITORY}/actions/workflows/ready-for-part2.yml/disable"
