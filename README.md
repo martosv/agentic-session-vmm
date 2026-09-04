@@ -1,17 +1,3 @@
-> [!IMPORTANT]  **DO NOT FORK OR CLONE THIS TEMPLATE REPOSITORY FOR THE EXERCISE!**
->
-> Instead, create your own repository from the template. See
-> [how to create a repository from a template](#1-create-your-workshop-repository).
-
-> [!NOTE]
-> **AFTER CREATING YOUR REPOSITORY FROM TEMPLATE, WAIT 20–30 SECONDS AND THEN REFRESH YOUR BROWSER**
-
-> Because **configure-codespaces** workflow needs to be completed before continuing.
-> This is required for the GitHub Codespace you'll create in the next step. The
-> workflow updates `devcontainer.json` with the permissions required for your Codespace in this workshop.
-
-
-
 # GitHub Agentic Workflows Workshop
 
 Build and run secure, AI-powered automations with GitHub Agentic Workflows
