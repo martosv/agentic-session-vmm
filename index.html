@@ -41,6 +41,18 @@
               <span aria-hidden="true">&#8594;</span>
             </button>
           </li>
+          <li>
+            <button
+              class="daily-update-trigger"
+              type="button"
+              aria-haspopup="dialog"
+              aria-controls="september-5-dialog"
+              data-dialog-trigger
+            >
+              <span>5th of September</span>
+              <span aria-hidden="true">&#8594;</span>
+            </button>
+          </li>
         </ul>
       </nav>
     </aside>
@@ -176,6 +188,32 @@
           Actions for tasks where exact reproducibility doesn&rsquo;t matter, such as triaging
           issues, drafting documentation, researching dependencies, or proposing code
           improvements for human review.
+        </p>
+      </article>
+    </dialog>
+
+    <dialog
+      class="daily-update-dialog"
+      id="september-5-dialog"
+      aria-labelledby="september-5-question"
+      aria-describedby="september-5-answer"
+    >
+      <article class="daily-update-dialog-content">
+        <header class="daily-update-dialog-header">
+          <p>Daily Update / 5th of September</p>
+          <form method="dialog">
+            <button class="dialog-close" type="submit" aria-label="Close dialog" title="Close dialog">
+              <span aria-hidden="true">&#10005;</span>
+            </button>
+          </form>
+        </header>
+        <h2 id="september-5-question">Is gh-aw a replacement for GitHub Actions, or does it run on top of it?</h2>
+        <p id="september-5-answer">
+          <code>gh-aw</code> runs through GitHub Actions: it compiles a Markdown workflow
+          file into a <code>.lock.yml</code> GitHub Actions workflow. Every run is an
+          Actions run with native triggers, runner options, job logs, and spending limits.
+          The generated agent job adds the selected AI engine and configurable controls
+          such as sandboxing, threat detection, and safe outputs.
         </p>
       </article>
     </dialog>
