@@ -41,6 +41,18 @@
               <span aria-hidden="true">&#8594;</span>
             </button>
           </li>
+          <li>
+            <button
+              class="daily-update-trigger"
+              type="button"
+              aria-haspopup="dialog"
+              aria-controls="september-7-dialog"
+              data-dialog-trigger
+            >
+              <span>7th of September</span>
+              <span aria-hidden="true">&#8594;</span>
+            </button>
+          </li>
         </ul>
       </nav>
     </aside>
@@ -176,6 +188,31 @@
           Actions for tasks where exact reproducibility doesn&rsquo;t matter, such as triaging
           issues, drafting documentation, researching dependencies, or proposing code
           improvements for human review.
+        </p>
+      </article>
+    </dialog>
+
+    <dialog
+      class="daily-update-dialog"
+      id="september-7-dialog"
+      aria-labelledby="september-7-question"
+      aria-describedby="september-7-answer"
+    >
+      <article class="daily-update-dialog-content">
+        <header class="daily-update-dialog-header">
+          <p>Daily Update / 7th of September</p>
+          <form method="dialog">
+            <button class="dialog-close" type="submit" aria-label="Close dialog" title="Close dialog">
+              <span aria-hidden="true">&#10005;</span>
+            </button>
+          </form>
+        </header>
+        <h2 id="september-7-question">What are safe outputs?</h2>
+        <p id="september-7-answer">
+          Safe outputs are structured write requests that AI agents can produce, such as
+          creating issues, adding comments, or opening pull requests. Rather than giving
+          the agent job direct write access, configured safe outputs are validated and
+          applied in separate jobs with scoped permissions.
         </p>
       </article>
     </dialog>
